@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17/02/2019, 2:18:45 p.m. by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="pojos.Materia" table="materia" catalog="r4ilw06qulc69m6b" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="Id" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="Nombre" length="100" not-null="true" />
+        </property>
+        <property name="horas" type="int">
+            <column name="Horas" not-null="true" />
+        </property>
+        <property name="laboratorio" type="boolean">
+            <column name="Laboratorio" not-null="true" />
+        </property>
+        <property name="idProfesor" type="string">
+            <column name="Id_Profesor" length="30" not-null="true" />
+        </property>
+        <property name="idGrado" type="int">
+            <column name="Id_Grado" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
