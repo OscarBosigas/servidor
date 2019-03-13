@@ -13,6 +13,7 @@ import org.hibernate.SessionFactory;
 import pojos.Alumno;
 import pojos.Grado;
 import pojos.Materia;
+import pojos.NotaId;
 import pojos.Profesor;
 import pojos.Tutor;
 
@@ -106,5 +107,41 @@ public class DAOS {
             list.add(alumno);
         }
         return list;
+    }
+    
+    public void setNota(String idAlumno, int idMateria){
+        SessionFactory sf = NewHibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        Query query = session.createQuery("Insert into Nota values()");
+        
+    }
+    
+    public double promedio(){
+        List<String> notas = new ArrayList<>();
+        double result = 0;
+        for (int i = 0; i < notas.size(); i++) {
+            String x[] = notas.get(i).split(",");
+            result += Double.parseDouble(x[1]);
+        }
+        return result;
+    }
+    
+    public String login(String usuario, String pass){
+        Alumno alumno = this.consultarAlumno(pass);
+        Profesor profesor = this.consultarProfesor(usuario);
+        
+        if(alumno != null){
+            if(alumno.getApellidos().equals(usuario)){
+                return "Estudiante";
+            }
+        }
+        if(profesor != null){
+            if(profesor.getContraseña().equals(pass)){
+                return "Profesor";
+            }
+        }
+        
+            
+        return "nada";
     }
 }

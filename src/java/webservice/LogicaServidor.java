@@ -42,53 +42,11 @@ public class LogicaServidor {
      */
     @WebMethod(operationName = "login")
     public String login(@WebParam(name = "usuario") String usuario, @WebParam(name = "contra") String contra) {
-        try {
-            //TODO write your implementation code here:
-            Conexion c = new Conexion();
-            Connection conn = c.conectar();
-            Statement s1 = (Statement) conn.createStatement();            
-            Statement s2 = (Statement) conn.createStatement();
-
-            ResultSet rs1 = s1.executeQuery("SELECT identificacion, contraseña FROM profesor");
-            ResultSet rs2 = s2.executeQuery("SELECT apellidos, identificacion FROM alumno");
-
+        DAOS daos = new DAOS();
+        return daos.login(usuario, contra);
             
-            while (rs1.next()) {
-                listProfesores.add(rs1.getString(1) + "," + rs1.getString(2));
-            }
-            while (rs2.next()) {
-                listEstudiantes.add(rs2.getString(1) + "," + rs2.getString(2));
-            }
-
-            for (int i = 0; i < listProfesores.size(); i++) {
-                if (existInList(listProfesores.get(i), usuario, contra)) {
-                    return "Profesor";
-                }
-            }
-            for (int i = 0; i < listEstudiantes.size(); i++) {
-                if (existInList(listEstudiantes.get(i), usuario, contra)) {
-                    return "Estudiante";
-                }
-            }
-        } catch (SQLException ex) { 
-            Logger.getLogger(LogicaServidor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-            return "nada";
     }
 
-    /**
-     * Web service operation
-     * @param s1
-     * @param s2
-     * @param s3
-     * @return 
-     */
-    @WebMethod(operationName = "existInList")
-    public boolean existInList(@WebParam(name = "s1") String s1, @WebParam(name = "s2") String s2, @WebParam(name = "s3") String s3) {
-         String x[] = s1.split(",");
-        return x[0].equals(s2) && x[1].equals(s3);
-    }
 
     /**
      * Web service operation
