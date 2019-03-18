@@ -115,5 +115,41 @@ public class LogicaServidor {
         return daos.consultarAlumnosPorGrado(idGrado);
     }
 
+    /**
+     * Web service operation
+     * @param parameter
+     * @return 
+     */
+    @WebMethod(operationName = "valorNota")
+    public double valorNota(@WebParam(name = "parameter") ArrayList<String> parameter) {
+        //TODO write your implementation code here:
+        DAOS daos = new DAOS();
+        return daos.notaFinal(parameter);
+    }
+
+    /**
+     * Web service operation
+     * @param porcentaje
+     * @param valo
+     * @return 
+     */
+    @WebMethod(operationName = "agregarPonderado")
+    public String agregarPonderado(@WebParam(name = "porcentaje") String porcentaje, @WebParam(name = "valo") String valo) {
+        //TODO write your implementation code here:
+        return porcentaje + "," + valo;
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "calificar")
+    public String calificar(@WebParam(name = "idAlumno") String idAlumno, @WebParam(name = "idGrado") int idGrado, @WebParam(name = "notas") ArrayList<String> notas) {
+        //TODO write your implementation code here:
+        DAOS daos = new DAOS();
+        daos.ingresarNota(idAlumno, idGrado, notas);
+        return "";
+    }
+
+
     
 }

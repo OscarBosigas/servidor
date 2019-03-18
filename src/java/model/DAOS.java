@@ -7,12 +7,15 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.sf.ehcache.hibernate.HibernateUtil;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import pojos.Alumno;
 import pojos.Grado;
 import pojos.Materia;
+import pojos.Nota;
 import pojos.NotaId;
 import pojos.Profesor;
 import pojos.Tutor;
@@ -29,7 +32,8 @@ public class DAOS {
         Profesor p = (Profesor) session.get(Profesor.class, id);
         if (p != null) {
             return p;
-        }
+        }        
+        session.close();
         return null;
     }
 
@@ -40,9 +44,10 @@ public class DAOS {
         if (m != null) {
             return m;
         }
+        session.close();
         return null;
     }
-    
+
     public Grado consultarGradoDeMateria(int id) {
         SessionFactory sf = NewHibernateUtil.getSessionFactory();
         Session session = sf.openSession();
@@ -52,7 +57,8 @@ public class DAOS {
             return g;
         }
         return null;
-    }    
+    }
+
     public String consultarGrado(int id) {
         SessionFactory sf = NewHibernateUtil.getSessionFactory();
         Session session = sf.openSession();
@@ -60,6 +66,7 @@ public class DAOS {
         if (g != null) {
             return g.getNombre();
         }
+        session.close();
         return "vacio";
     }
 
@@ -80,6 +87,7 @@ public class DAOS {
         if (t != null) {
             return t;
         }
+        session.close();
         return null;
     }
 
@@ -88,35 +96,30 @@ public class DAOS {
         Session session = sf.openSession();
         Query query = session.createQuery("Select m from Materia m where Id_Profesor=:Id_Profesor");
         query.setParameter("Id_Profesor", idProfesor);
-        List<Materia> list= new ArrayList();
-        for (int i=0; i<query.list().size(); i++) {
+        List<Materia> list = new ArrayList();
+        for (int i = 0; i < query.list().size(); i++) {
             Materia materia = (Materia) query.list().get(i);
             list.add(materia);
         }
+        session.close();
         return list;
     }
-    
+
     public List<Alumno> consultarAlumnosPorGrado(int idGrado) {
         SessionFactory sf = NewHibernateUtil.getSessionFactory();
         Session session = sf.openSession();
         Query query = session.createQuery("Select a from Alumno a where Id_Grado=:Id_Grado");
         query.setParameter("Id_Grado", idGrado);
-        List<Alumno> list= new ArrayList();
-        for (int i=0; i<query.list().size(); i++) {
+        List<Alumno> list = new ArrayList();
+        for (int i = 0; i < query.list().size(); i++) {
             Alumno alumno = (Alumno) query.list().get(i);
             list.add(alumno);
         }
+        session.close();
         return list;
     }
-    
-    public void setNota(String idAlumno, int idMateria){
-        SessionFactory sf = NewHibernateUtil.getSessionFactory();
-        Session session = sf.openSession();
-        Query query = session.createQuery("Insert into Nota values()");
-        
-    }
-    
-    public double promedio(){
+
+    public double promedio() {
         List<String> notas = new ArrayList<>();
         double result = 0;
         for (int i = 0; i < notas.size(); i++) {
@@ -125,23 +128,59 @@ public class DAOS {
         }
         return result;
     }
-    
-    public String login(String usuario, String pass){
+
+    public String login(String usuario, String pass) {
         Alumno alumno = this.consultarAlumno(pass);
         Profesor profesor = this.consultarProfesor(usuario);
-        
-        if(alumno != null){
-            if(alumno.getApellidos().equals(usuario)){
+
+        if (alumno != null) {
+            if (alumno.getApellidos().equals(usuario)) {
                 return "Estudiante";
             }
         }
-        if(profesor != null){
-            if(profesor.getContraseña().equals(pass)){
+        if (profesor != null) {
+            if (profesor.getContraseña().equals(pass)) {
                 return "Profesor";
             }
         }
-        
-            
+
         return "nada";
+    }
+
+    public double notaFinal(List<String> listNotas) {
+        double resultado = 0;
+        double porcentaje = 0;
+        double valor = 0;
+        for (int i = 0; i < listNotas.size(); i++) {
+            String x[] = listNotas.get(i).split(",");
+            porcentaje = Double.parseDouble(x[0]) / 100;
+            valor = Double.parseDouble(x[1]);
+            resultado += porcentaje * valor;
+        }
+        return resultado;
+    }
+    
+    public String observaciones(List<String> list){
+        String aux = "";
+        for (int i = 0; i < list.size(); i++) {
+            String x[] = list.get(i).split(",");
+            aux += "\n" + x[2];
+        }
+        return aux;
+    }
+
+    public void ingresarNota(String idAlumno, int idMateria, ArrayList<String> listNotas) {
+        SessionFactory sf = NewHibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            session.save(new Nota(new NotaId(idAlumno, idMateria), this.notaFinal(listNotas), this.observaciones(listNotas)));
+            tx.commit();
+            session.close();
+        }catch(Exception e){
+            tx.rollback();
+            System.err.println(e.getMessage());
+        }
     }
 }

@@ -20,8 +20,8 @@
         <property name="telefono" type="string">
             <column name="Telefono" length="20" not-null="true" />
         </property>
-        <property name="contrase&#241;a" type="string">
-            <column name="Contrase&#241;a" length="10" not-null="true" />
+        <property name="contraseña" type="string">
+            <column name="Contraseña" length="10" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>

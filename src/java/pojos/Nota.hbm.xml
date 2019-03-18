@@ -12,7 +12,7 @@
                 <column name="Id_Materia" />
             </key-property>
         </composite-id>
-        <property name="valor" type="int">
+        <property name="valor" type="double">
             <column name="Valor" not-null="true" />
         </property>
     </class>

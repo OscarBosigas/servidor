@@ -10,14 +10,24 @@ public class Nota  implements java.io.Serializable {
 
 
      private NotaId id;
-     private int valor;
+     private double valor;
+     private String observacion;
 
     public Nota() {
     }
 
-    public Nota(NotaId id, int valor) {
+    public Nota(NotaId id, double valor, String observacion) {
        this.id = id;
        this.valor = valor;
+       this.observacion=observacion;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
    
     public NotaId getId() {
@@ -27,7 +37,7 @@ public class Nota  implements java.io.Serializable {
     public void setId(NotaId id) {
         this.id = id;
     }
-    public int getValor() {
+    public double getValor() {
         return this.valor;
     }
     
